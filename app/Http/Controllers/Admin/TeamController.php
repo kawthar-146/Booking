@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Team;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\TeamStoreRequest;
 
 class TeamController extends Controller
@@ -37,36 +38,40 @@ class TeamController extends Controller
      * @return \Illuminate\Http\Response
      */
    
-    public function store(Request $request)
+     public function store(Request $request)
      {  
         // $image = $request->file('image')->store('public/team');
 
-         $request->validate([
-        'name' => 'required',
-        'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        'phone' => 'required',
-        'type' => 'required',
-    ]);
+    //      $request->validate([
+    //     'name' => 'required',
+    //     'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+    //     'phone' => 'required',
+    //     'type' => 'required',
+    // ]);
 
-    if ($image = $request->file('image')) {
-        $destinationPath = 'image/';
-        $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
-        $image->move($destinationPath, $profileImage);
-        $input['image'] = "$profileImage";
-    }
-    $input = $request->all();
+    // if ($image = $request->file('image')) {
+    //     $destinationPath = 'image/';
+    //     $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
+    //     $image->move($destinationPath, $profileImage);
+    //     $input['image'] = "$profileImage";
+    // }
+    // $input = $request->all();
 
-    Team::create($input);
+    // Team::create($input);
+//    dd($request->image);
+if($request->hasFile('image')){
+    $image = $request->file('image')->store('team','public');
 
-        // $image = $request->file('image')->store('public/team');
+         Team::create(
+            [ 'name' => $request->name, 
+              'image' => $image, 
+              'phone' => $request->phone,
+               'type' => $request->type 
+            ]);
+}
 
-        //  Team::create(
-        //     [ 'name' => $request->name, 
-        //       'image' => $image, 
-        //       'phone' => $request->phone,
-        //        'type' => $request->type 
-        //     ]);
-            return redirect('admin.team.index')->with('flash_message', 'Employee Addedd!'); 
+        
+            return redirect()->route('admin.team.index')->with('success', 'Employee Addedd!'); 
     }
      
 
@@ -87,9 +92,9 @@ class TeamController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Team $team)
     {
-        //
+        return view('admin.team.edit', compact('team'));
     }
 
     /**
@@ -99,9 +104,25 @@ class TeamController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Team $team)
     {
-        //
+       $request->validate([
+            'name' => 'required',
+            'phone' => 'required',
+            'type' => 'required'
+        ]);
+        $image = $team->image;
+        if($request->hasFile('image')){
+            Storage::delete($team->image);
+            $image = $request->file('image')->store('team','public');
+        }
+        $team->update([
+            'name'=>$request->name,
+            'phone'=>$request->phone,
+            'type'=>$request->type,
+            'image'=>$image
+        ]);
+        return to_route('admin.team.index')->with('success', 'Table updated successfully.');
     }
 
     /**
@@ -110,8 +131,10 @@ class TeamController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Team $team)
     {
-        //
+        Storage::delete($team->image);
+        $team->delete();
+        return to_route('admin.team.index')->with('danger', 'Employee deleted successfully.');
     }
 }

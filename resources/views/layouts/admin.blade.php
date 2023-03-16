@@ -32,6 +32,9 @@
                     <x-nav-link :href="route('admin.reservation.index')" :active="request()->routeIs('dashboard')">
                         {{ __('Appointment') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('admin.service.index')" :active="request()->routeIs('dashboard')">
+                        {{ __('Services') }}
+                    </x-nav-link>
                 <!-- <a class="px-4 py-2 mt-2 text-sm font-semibold text-gray-900 bg-gray-200 rounded-lg dark-mode:bg-gray-700 dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 md:mt-0 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline" href="{{ route('admin.team.index') }}">Team</a>
                 <a class="px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg dark-mode:bg-transparent dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 md:mt-0 md:ml-4 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline" href="{{ route('admin.reservation.index') }}">Appointment</a> -->
                 <!-- <a class="px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg dark-mode:bg-transparent dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 md:mt-0 md:ml-4 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline" href="#">Services</a>
@@ -87,8 +90,28 @@
             </nav>
         </div>
     </div>
-    <main class="m-2 p-8">
-    {{ $slot }}
+    <main class="m-2 p-8 w-full" >
+            <div>
+                @if (session()->has('danger'))
+                    <div class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800"
+                        role="alert">
+                        <span class="font-medium">{{ session()->get('danger') }}!</span>
+                    </div>
+                @endif
+                @if (session()->has('success'))
+                    <div class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800"
+                        role="alert">
+                        <span class="font-medium">{{ session()->get('success') }}!</span>
+                    </div>
+                @endif
+                @if (session()->has('warning'))
+                    <div class="p-4 mb-4 text-sm text-yellow-700 bg-yellow-100 rounded-lg dark:bg-yellow-200 dark:text-yellow-800"
+                        role="alert">
+                        <span class="font-medium">{{ session()->get('warning') }}!</span>
+                    </div>
+                @endif
+            </div>
+            {{ $slot }}
         </main>
     </body>
 </html>

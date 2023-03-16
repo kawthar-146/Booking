@@ -1,0 +1,28 @@
+
+.content-carousel1 {
+	width: 600px;
+	display: block;
+	margin: 0 auto;
+}
+.hair-carousel {
+	width: calc(100% - 170px);
+}
+.hair-carousel div {
+	width: 100%;
+}
+.hair-carousel .owl-controls .owl-dot {
+	background-size: cover;
+	margin-top: 10px;
+}
+.hair-carousel .owl-dots {
+	position: absolute;
+	top: 0;
+	right: -170px;
+	width: 150px;
+	height: 100%;
+}
+.hair-carousel .owl-dot {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;  
+}

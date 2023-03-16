@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 use App\Models\Reservation;
+use App\Models\Team;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
+use App\Http\Requests\ReservationStoreRequest;
 
 class ReservationController extends Controller
 {
@@ -15,8 +16,8 @@ class ReservationController extends Controller
      */
     public function index()
     {
-        $reservation = Reservation::all();
-        return view('admin.reservation.index', compact('reservation'));
+        $reservations = Reservation::all();
+        return view('admin.reservation.index', compact('reservations'));
     }
 
     /**
@@ -26,7 +27,8 @@ class ReservationController extends Controller
      */
     public function create()
     {
-        //
+        $team = Team::all();
+        return view('admin.reservation.create', compact('team'));
     }
 
     /**
@@ -37,7 +39,16 @@ class ReservationController extends Controller
      */
    public function store(Request $request)
     {
-        //
+        Reservation::create(
+            [ 'first_name' => $request->first_name, 
+              'last_name' =>$request->last_name, 
+              'email' => $request->email,
+              'res_date'=>$request->res_date,
+              'tel_number' => $request->tel_number ,
+              'team_id' => $request->team_id ,
+            //    'type' => $request->type ,
+            ]);
+            return redirect()->route('admin.reservation.index')->with('success', 'Reservation created successfully.');
     }
     /**
      * Display the specified resource.
@@ -58,7 +69,8 @@ class ReservationController extends Controller
      */
     public function edit($id)
     {
-        //
+        $employees = Team::all;
+        // return view('admin.reservation.edit', compact('reservation', 'employees'));
     }
 
     /**
@@ -79,9 +91,11 @@ class ReservationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Reservation $reservation)
     {
-        //
+        $reservation->delete();
+
+        return to_route('admin.reservation.index')->with('warning', 'Reservation deleted successfully.');
     }
 }
 
